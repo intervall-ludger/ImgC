@@ -5,10 +5,14 @@ import argparse
 def convert(img_path: Path,
             out_suffix: str,
             max_size: float | None,
-            min_size: float | None):
+            min_size: float | None,
+            filter_suffix: str | None = None):
     if img_path.is_dir():
-        images = load_images(img_path)
+        images = load_images(img_path, filter_suffix)
     else:
+        if filter_suffix is not None:
+            if img_path.suffix != filter_suffix:
+                raise RuntimeError
         images = load_image(img_path)
         if type(images) == tuple:
             images = [images]
@@ -32,6 +36,12 @@ parser = argparse.ArgumentParser(
 )
 parser.add_argument(
     "-f", "--filename", type=Path, help="Image file or folder with images"
+)
+parser.add_argument(
+    "--filter_suffix",
+    type=str,
+    default='*',
+    help="Suffix of the input image. (Optional)",
 )
 parser.add_argument(
     "-s",

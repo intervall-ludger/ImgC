@@ -10,7 +10,8 @@ from pdf2image import convert_from_path
 def save(image: Image.Image,
          new_path: Path,
          max_size: float | None,
-         min_size: float | None
+         min_size: float | None,
+         min_quality: int = 95
          ):
     quality = 100
     old_size = 0
@@ -30,6 +31,8 @@ def save(image: Image.Image,
         size = get_img_size(new_path)
         img_size = image.size
         quality -= 1
+        if min_quality < quality:
+            quality = min_quality
         if size > max_size:
             if old_size != size:
                 old_size = size
@@ -73,9 +76,12 @@ def save_pdf(image: Image.Image,
     save(image, img_path.with_suffix(".pdf"), max_size, min_size)
 
 
-def load_images(img_folder: Path):
+def load_images(img_folder: Path, filter_suffix: str):
     images = []
     for img_path in img_folder.glob("*"):
+        if filter_suffix is not None:
+            if img_path.suffix != filter_suffix:
+                continue
         output = load_image(img_path)
         if type(output) == list:
             for img_tuple in output:
@@ -89,6 +95,8 @@ def load_image(img_path: Path):
     if img_path.suffix == ".pdf":
         output = []
         pdfs = convert_from_path(img_path)
+        if len(pdfs) == 1:
+            return (pdfs[0], Path(str(img_path).replace(img_path.suffix, ".pdf")))
         for i, pdf in enumerate(pdfs):
             output.append(
                 (pdf, Path(str(img_path).replace(img_path.suffix, f"_{i}.pdf")))
