@@ -1,4 +1,4 @@
-[![Actions Status](https://github.com/ludgerradke/ImgC/workflows/test/badge.svg)]
+[![Actions Status](https://github.com/ludgerradke/ImgC/workflows/test/badge.svg)](https://github.com/ludgerradke/ImgC/actions)
 
 # ImgC - Image Optimizer
 
