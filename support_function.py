@@ -7,7 +7,7 @@ from PIL import Image
 from pdf2image import convert_from_path
 
 
-def save(image: Image.Image,
+def save(org_image: Image.Image,
          new_path: Path,
          max_size: float | None,
          min_size: float | None,
@@ -15,16 +15,21 @@ def save(image: Image.Image,
          ):
     quality = 100
     old_size = 0
-    image.save(new_path, optimze=True, quality=quality)
-
+    optimize = True
+    try:
+        org_image.save(new_path, optimze=optimize, quality=quality)
+    except:
+        optimize = False
+        org_image.save(new_path, optimze=optimize, quality=quality)
+    image = org_image.copy()
     while min_size is not None:
         size = get_img_size(new_path)
         img_size = image.size
         if size < min_size:
             factor = (min_size / size) ** (1 / 2)
             new_size = (round(factor * img_size[0]), round(factor * img_size[1]))
-            image = image.resize(new_size)
-            image.save(new_path, optimze=True, quality=quality)
+            image = org_image.resize(new_size)
+            image.save(new_path, optimze=optimize, quality=quality)
         else:
             min_size = None
     while max_size is not None:
@@ -39,8 +44,8 @@ def save(image: Image.Image,
                 continue
             factor = (max_size / size) ** (1 / 2)
             new_size = (int(factor * img_size[0]), int(factor * img_size[1]))
-            image = image.resize(new_size)
-            image.save(new_path, optimze=True, quality=quality)
+            image = org_image.resize(new_size)
+            image.save(new_path, optimze=optimize, quality=quality)
         else:
             max_size = None
 
@@ -94,7 +99,14 @@ def load_images(img_folder: Path, filter_suffix: str):
 def load_image(img_path: Path):
     if img_path.suffix == ".pdf":
         output = []
-        pdfs = convert_from_path(img_path)
+        dpi = 1200
+        while True:
+            try:
+                pdfs = convert_from_path(img_path, dpi=dpi)
+            except:
+                dpi -= 200
+                continue
+            break
         if len(pdfs) == 1:
             return (pdfs[0], Path(str(img_path).replace(img_path.suffix, ".pdf")))
         for i, pdf in enumerate(pdfs):
