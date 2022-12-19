@@ -3,8 +3,10 @@ import os
 # import module
 from pathlib import Path
 
+import PIL.Image
 from PIL import Image
 from pdf2image import convert_from_path
+from typing import Tuple
 
 
 def save(org_image: Image.Image,
@@ -12,16 +14,19 @@ def save(org_image: Image.Image,
          max_size: float | None,
          min_size: float | None,
          min_quality: int = 95
-         ):
+         ) -> None:
     quality = 100
     old_size = 0
     optimize = True
+    # Save the original image to the new path
+    # If optimization fails, try saving again without optimization
     try:
         org_image.save(new_path, optimze=optimize, quality=quality)
     except:
         optimize = False
         org_image.save(new_path, optimze=optimize, quality=quality)
     image = org_image.copy()
+    # If a minimum size is specified, resize the image until it meets the minimum size requirement
     while min_size is not None:
         size = get_img_size(new_path)
         img_size = image.size
@@ -32,6 +37,9 @@ def save(org_image: Image.Image,
             image.save(new_path, optimze=optimize, quality=quality)
         else:
             min_size = None
+
+    # If a maximum size is specified, resize the image and reduce the quality until
+    # it meets the maximum size requirement
     while max_size is not None:
         size = get_img_size(new_path)
         img_size = image.size
@@ -54,7 +62,7 @@ def save_jpg(image: Image.Image,
              img_path: Path,
              max_size: float | None,
              min_size: float | None
-             ):
+             ) -> None:
     image = image.convert("RGB")
     save(image, img_path.with_suffix(".jpg"), max_size, min_size)
 
@@ -62,26 +70,26 @@ def save_jpg(image: Image.Image,
 def save_png(image: Image.Image,
              img_path: Path,
              max_size: float | None,
-             min_size: float | None):
+             min_size: float | None) -> None:
     save(image, img_path.with_suffix(".png"), max_size, min_size)
 
 
 def save_tif(image: Image.Image,
              img_path: Path,
              max_size: float | None,
-             min_size: float | None):
+             min_size: float | None) -> None:
     save(image, img_path.with_suffix(".tif"), max_size, min_size)
 
 
 def save_pdf(image: Image.Image,
              img_path: Path,
              max_size: float | None,
-             min_size: float | None):
+             min_size: float | None) -> None:
     image = image.convert("RGB")
     save(image, img_path.with_suffix(".pdf"), max_size, min_size)
 
 
-def load_images(img_folder: Path, filter_suffix: str):
+def load_images(img_folder: Path, filter_suffix: str) -> list[PIL.Image.Image]:
     images = []
     for img_path in img_folder.glob("*"):
         if filter_suffix is not None:
@@ -96,7 +104,7 @@ def load_images(img_folder: Path, filter_suffix: str):
     return images
 
 
-def load_image(img_path: Path):
+def load_image(img_path: Path) -> Tuple:
     if img_path.suffix == ".pdf":
         output = []
         dpi = 1200
@@ -114,14 +122,23 @@ def load_image(img_path: Path):
                 (pdf, Path(str(img_path).replace(img_path.suffix, f"_{i}.pdf")))
             )
         return output
-    if img_path.suffix in [".png"]:
+    if img_path.suffix in [".jpg", ".png", ".tif"]:
         return Image.open(img_path), img_path
     return None, ""
 
 
-def bytes_to_MB(bytes: str):
+# Convert a string representation of bytes to megabytes
+# and return the result as a float
+def bytes_to_MB(bytes: str) -> float:
+    # Divide the number of bytes by the number of bytes in a megabyte
+    # (1024 bytes in a kilobyte and 1024 kilobytes in a megabyte)
+    # and return the result as a float
     return float(bytes) / (1024 ** 2)
 
 
+# Get the size of an image file in megabytes
 def get_img_size(img_path: Path):
+    # Use the os module's getsize function to get the size of the image file
+    # in bytes and pass it to the bytes_to_MB function to convert it to megabytes
     return bytes_to_MB(os.path.getsize(img_path))
+
