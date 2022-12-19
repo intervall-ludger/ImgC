@@ -2,19 +2,20 @@ import os
 
 # import module
 from pathlib import Path
-
-import PIL.Image
-from PIL import Image
-from pdf2image import convert_from_path
 from typing import Tuple
 
+import PIL.Image
+from pdf2image import convert_from_path
+from PIL import Image
 
-def save(org_image: Image.Image,
-         new_path: Path,
-         max_size: float | None,
-         min_size: float | None,
-         min_quality: int = 95
-         ) -> None:
+
+def save(
+    org_image: Image.Image,
+    new_path: Path,
+    max_size: float | None,
+    min_size: float | None,
+    min_quality: int = 95,
+) -> None:
     quality = 100
     old_size = 0
     optimize = True
@@ -58,33 +59,28 @@ def save(org_image: Image.Image,
             max_size = None
 
 
-def save_jpg(image: Image.Image,
-             img_path: Path,
-             max_size: float | None,
-             min_size: float | None
-             ) -> None:
+def save_jpg(
+    image: Image.Image, img_path: Path, max_size: float | None, min_size: float | None
+) -> None:
     image = image.convert("RGB")
     save(image, img_path.with_suffix(".jpg"), max_size, min_size)
 
 
-def save_png(image: Image.Image,
-             img_path: Path,
-             max_size: float | None,
-             min_size: float | None) -> None:
+def save_png(
+    image: Image.Image, img_path: Path, max_size: float | None, min_size: float | None
+) -> None:
     save(image, img_path.with_suffix(".png"), max_size, min_size)
 
 
-def save_tif(image: Image.Image,
-             img_path: Path,
-             max_size: float | None,
-             min_size: float | None) -> None:
+def save_tif(
+    image: Image.Image, img_path: Path, max_size: float | None, min_size: float | None
+) -> None:
     save(image, img_path.with_suffix(".tif"), max_size, min_size)
 
 
-def save_pdf(image: Image.Image,
-             img_path: Path,
-             max_size: float | None,
-             min_size: float | None) -> None:
+def save_pdf(
+    image: Image.Image, img_path: Path, max_size: float | None, min_size: float | None
+) -> None:
     image = image.convert("RGB")
     save(image, img_path.with_suffix(".pdf"), max_size, min_size)
 
@@ -133,7 +129,7 @@ def bytes_to_MB(bytes: str) -> float:
     # Divide the number of bytes by the number of bytes in a megabyte
     # (1024 bytes in a kilobyte and 1024 kilobytes in a megabyte)
     # and return the result as a float
-    return float(bytes) / (1024 ** 2)
+    return float(bytes) / (1024**2)
 
 
 # Get the size of an image file in megabytes
@@ -141,4 +137,3 @@ def get_img_size(img_path: Path):
     # Use the os module's getsize function to get the size of the image file
     # in bytes and pass it to the bytes_to_MB function to convert it to megabytes
     return bytes_to_MB(os.path.getsize(img_path))
-

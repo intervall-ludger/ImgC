@@ -55,5 +55,18 @@ To contribute to the project, follow these steps:
 
 We appreciate any and all contributions, no matter how big or small. Thank you for considering contributing to the imgc project!
 
+Note: Please run the GitHocks before you create a Pull Request.
+
+### Git hocks
+Install "pre-commit"
+```bash
+pip install pre-commit
+```
+
+then run:
+```bash
+pre-commit install
+```
+
 # License
 ImgC is licensed under the GNU GENERAL PUBLIC LICENSE Version 3. See the [LICENSE](./LICENSE) file for more information.

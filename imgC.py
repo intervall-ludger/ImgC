@@ -1,12 +1,15 @@
-from support_function import *
 import argparse
 
+from support_function import *
 
-def convert(img_path: Path,
-            out_suffix: str,
-            max_size: float | None,
-            min_size: float | None,
-            filter_suffix: str | None = None):
+
+def convert(
+    img_path: Path,
+    out_suffix: str,
+    max_size: float | None,
+    min_size: float | None,
+    filter_suffix: str | None = None,
+):
     try:
         if img_path.is_dir():
             images = load_images(img_path, filter_suffix)
@@ -18,7 +21,7 @@ def convert(img_path: Path,
             if type(images) == tuple:
                 images = [images]
     except AttributeError as e:
-        print(f'Invalid input path: {img_path}')
+        print(f"Invalid input path: {img_path}")
         return None
     for image, filename in images:
         if image is None:
@@ -35,7 +38,7 @@ def convert(img_path: Path,
             raise NotImplementedError
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description="ImgC - Optimizer for image format and size"
     )
@@ -45,7 +48,7 @@ if __name__ == '__main__':
     parser.add_argument(
         "--filter_suffix",
         type=str,
-        default='*',
+        default="*",
         help="Suffix of the input image. (Optional)",
     )
     parser.add_argument(
