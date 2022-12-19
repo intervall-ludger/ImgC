@@ -6,8 +6,8 @@ from support_function import *
 def convert(
     img_path: Path,
     out_suffix: str,
-    max_size: float | None,
-    min_size: float | None,
+    max_size: float | None = None,
+    min_size: float | None = None,
     filter_suffix: str | None = None,
 ):
     try:

@@ -1,3 +1,5 @@
+[![Actions Status](https://github.com/ludgerradke/ImgC/workflows/{workflow_name}/badge.svg)]
+
 # ImgC - Image Optimizer
 
 ImgC is a tool for optimizing images in terms of format and size. It can handle single images or a folder of images and supports the following output formats: **'png'**, **'jpg'**, **'tif'**, and **'pdf'**.
