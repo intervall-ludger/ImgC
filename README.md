@@ -72,3 +72,8 @@ pre-commit install
 
 # License
 ImgC is licensed under the GNU GENERAL PUBLIC LICENSE Version 3. See the [LICENSE](./LICENSE) file for more information.
+
+# Support
+
+If you really like this repository and find it useful, please consider (★) starring it, so that it can reach a broader audience of like-minded people.
+
