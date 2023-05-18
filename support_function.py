@@ -12,6 +12,7 @@ import pydicom
 import numpy as np
 import natsort
 
+
 def save(
     org_image: Image.Image,
     new_path: Path,
@@ -87,11 +88,14 @@ def save_pdf(
     image = image.convert("RGB")
     save(image, img_path.with_suffix(".pdf"), max_size, min_size)
 
+
 def save_mp4(images: list[Image.Image], video_path: Path) -> None:
     imageio.mimsave(video_path.with_suffix(".mp4"), images, duration=30)  # save as mp4
 
+
 def save_gif(images: list[Image.Image], gif_path: Path) -> None:
     imageio.mimsave(gif_path.with_suffix(".gif"), images, duration=30)  # save as gif
+
 
 def load_images(img_folder: Path, filter_suffix: str) -> list[PIL.Image.Image]:
     images = []
@@ -140,7 +144,7 @@ def load_image(img_path: Path) -> Tuple:
         array = np.stack((array,) * 3, axis=-1)
 
         # Create a PIL image
-        image = Image.fromarray(array, 'RGB')
+        image = Image.fromarray(array, "RGB")
 
         return image, img_path
     return None, ""

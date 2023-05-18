@@ -23,7 +23,7 @@ def convert(
     except AttributeError as e:
         print(f"Invalid input path: {img_path}")
         return None
-    if out_suffix in ["mp4", "gif"]:
+    if out_suffix in [".mp4", ".gif"]:
         # Save as mp4 or gif if multiple images are found
         image_list = [img_tuple[0] for img_tuple in images]
         if out_suffix == "mp4":
@@ -34,17 +34,16 @@ def convert(
         for image, filename in images:
             if image is None:
                 continue
-            if out_suffix == "jpg":
+            if out_suffix == ".jpg":
                 save_jpg(image, filename, max_size, min_size)
-            elif out_suffix == "png":
+            elif out_suffix == ".png":
                 save_png(image, filename, max_size, min_size)
-            elif out_suffix == "tif":
+            elif out_suffix == ".tif":
                 save_tif(image, filename, max_size, min_size)
-            elif out_suffix == "pdf":
+            elif out_suffix == ".pdf":
                 save_pdf(image, filename, max_size, min_size)
             else:
                 raise NotImplementedError
-
 
 
 if __name__ == "__main__":
@@ -71,4 +70,8 @@ if __name__ == "__main__":
     parser.add_argument("--max", type=float, help="max image size in MB", default=None)
 
     args = parser.parse_args()
+    args.suffix = args.suffix if "." in args.suffix else f".{args.suffix}"
+    args.filter_suffix = (
+        args.filter_suffix if "." in args.filter_suffix else f".{args.filter_suffix}"
+    )
     convert(args.filename, args.suffix, args.max, args.min, args.filter_suffix)
