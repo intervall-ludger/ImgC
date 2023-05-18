@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import ttk, filedialog, StringVar
+from tkinter import ttk, filedialog, StringVar, PhotoImage
 from pathlib import Path
 from imgC import convert
 from ttkthemes import ThemedStyle
@@ -34,12 +34,14 @@ def run_conversion():
 
     def execute_conversion():
         convert(
-            Path(filepath.get()),
-            suffix.get(),
-            float(min_size.get()),
-            float(max_size.get()),
-            filter_suffix.get(),
-        )
+                Path(filepath.get()),
+                suffix.get(),
+                float(min_size.get()),
+                float(max_size.get()),
+                filter_suffix.get(),
+                fps.get(),
+                size.get()
+            )
         if load_win.winfo_exists():
             load_win.destroy()
 
@@ -70,12 +72,17 @@ mainframe.columnconfigure(0, weight=1)
 mainframe.rowconfigure(0, weight=1)
 
 filepath = StringVar()
-out_suffixes = [".jpg", ".png", ".tif", ".pdf", ".mp4", ".gif"]
+out_suffixes = [".jpg", ".png", ".tif", ".pdf", ".mp4", ".gif", '.ico']
 in_suffixes = ["*", ".jpg", ".png", ".tif", ".pdf", ".dcm"]
 filter_suffix = StringVar()
 suffix = StringVar()
 suffix.set(".jpg")  # set default value
 filter_suffix.set("*")  # set default value
+
+fps = tk.DoubleVar()
+fps.set(30.0)  # set default value
+size = tk.IntVar()
+size.set(64)  # set default value
 
 ttk.Label(mainframe, text="File/Directory Path:").grid(column=1, row=1, sticky=tk.W)
 ttk.Entry(mainframe, width=50, textvariable=filepath).grid(
@@ -97,11 +104,13 @@ ttk.Label(mainframe, text="Output:").grid(column=1, row=3, sticky=tk.W)
 suffix_menu = tk.OptionMenu(mainframe, suffix, *out_suffixes)
 suffix_menu.grid(column=2, row=3, sticky=tk.W)
 
-ttk.Label(mainframe, text="Min size in MB:").grid(column=3, row=2, sticky=tk.W)
+min_size_label = ttk.Label(mainframe, text="Min size in MB:")
+min_size_label.grid(column=3, row=2, sticky=tk.W)
 min_size = Spinbox(mainframe, from_=0.0, to=1000.0, increment=0.1, format="%.1f")
 min_size.grid(column=4, row=2, sticky=tk.W)
 
-ttk.Label(mainframe, text="Max size in MB:").grid(column=3, row=3, sticky=tk.W)
+max_size_label = ttk.Label(mainframe, text="Max size in MB:")
+max_size_label.grid(column=3, row=3, sticky=tk.W)
 max_size_var = tk.DoubleVar()
 max_size_var.set(1000.0)
 max_size = ttk.Spinbox(
@@ -114,6 +123,52 @@ max_size = ttk.Spinbox(
 )
 max_size.grid(column=4, row=3, sticky=tk.W)
 
+fps_label = ttk.Label(mainframe, text="FPS:")
+fps_spinbox = ttk.Spinbox(mainframe, from_=0.1, to=60.0, increment=0.1, format="%.1f", textvariable=fps)
+
+ico_size_label = ttk.Label(mainframe, text="Size:")
+ico_size_spinbox = ttk.Spinbox(mainframe, from_=32, to=256.0, increment=1, format="%.1f", textvariable=size)
+def update_gui(*args):
+    if suffix.get() in [".mp4", ".gif"]:
+        # Hide the min/max size options and show the fps option
+        min_size_label.grid_remove()
+        min_size.grid_remove()
+        max_size_label.grid_remove()
+        max_size.grid_remove()
+        ico_size_label.grid_remove()
+        ico_size_spinbox.grid_remove()
+
+        fps_label.grid(column=3, row=2, sticky=tk.W)
+        fps_spinbox.grid(column=4, row=2, sticky=tk.W)
+    elif suffix.get() == '.ico':
+        min_size_label.grid_remove()
+        min_size.grid_remove()
+        max_size_label.grid_remove()
+        max_size.grid_remove()
+        fps_label.grid_remove()
+        fps_spinbox.grid_remove()
+
+        ico_size_label.grid(column=3, row=2, sticky=tk.W)
+        ico_size_spinbox.grid(column=4, row=2, sticky=tk.W)
+    else:
+        # Hide the fps option and show the min/max size options
+        fps_label.grid_remove()
+        fps_spinbox.grid_remove()
+        ico_size_label.grid_remove()
+        ico_size_spinbox.grid_remove()
+
+        min_size_label.grid(column=3, row=2, sticky=tk.W)
+        min_size.grid(column=4, row=2, sticky=tk.W)
+        max_size_label.grid(column=3, row=3, sticky=tk.W)
+        max_size.grid(column=4, row=3, sticky=tk.W)
+    root.update_idletasks()
+    width = root.winfo_reqwidth()
+    height = root.winfo_reqheight()
+    root.geometry(f"{width}x{height}")
+
+
+suffix.trace_add("write", update_gui)
+
 
 ttk.Button(mainframe, text="Run", command=run_conversion).grid(
     column=1, row=6, columnspan=4
@@ -122,11 +177,7 @@ ttk.Button(mainframe, text="Run", command=run_conversion).grid(
 for child in mainframe.winfo_children():
     child.grid_configure(padx=5, pady=5)
 
-root.update_idletasks()
-width = root.winfo_reqwidth()
-height = root.winfo_reqheight()
-root.geometry(f"{width}x{height}")
+update_gui()
 root.resizable(0, 0)
-
-
+root.iconbitmap("icon.ico")
 root.mainloop()

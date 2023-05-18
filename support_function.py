@@ -1,16 +1,16 @@
 import os
-
 # import module
 from pathlib import Path
 from typing import Tuple
 
 import PIL.Image
-from pdf2image import convert_from_path
-from PIL import Image
 import imageio
-import pydicom
-import numpy as np
 import natsort
+import numpy as np
+import pydicom
+from PIL import Image, ImageFilter
+
+from pdf2image import convert_from_path
 
 
 def save(
@@ -76,6 +76,21 @@ def save_png(
     save(image, img_path.with_suffix(".png"), max_size, min_size)
 
 
+def save_ico(image, filename, size: int = 64):
+    # Convert the image to RGB
+    image = image.convert("RGB")
+
+    # Resize the image using high-quality resampling
+    image = image.resize((size, size), Image.BICUBIC)
+
+    # Apply sharpening filter
+    sharper = ImageFilter.SHARPEN()
+    image = image.filter(sharper)
+
+    # Save the image in ICO format
+    image.save(filename.with_suffix('.ico'), format='ICO', size=(size, size))
+
+
 def save_tif(
     image: Image.Image, img_path: Path, max_size: float | None, min_size: float | None
 ) -> None:
@@ -89,12 +104,12 @@ def save_pdf(
     save(image, img_path.with_suffix(".pdf"), max_size, min_size)
 
 
-def save_mp4(images: list[Image.Image], video_path: Path) -> None:
-    imageio.mimsave(video_path.with_suffix(".mp4"), images, duration=30)  # save as mp4
+def save_mp4(images: list[Image.Image], video_path: Path, fps: int) -> None:
+    imageio.mimsave(video_path.with_suffix(".mp4"), images, fps=fps)  # save as mp4
 
 
-def save_gif(images: list[Image.Image], gif_path: Path) -> None:
-    imageio.mimsave(gif_path.with_suffix(".gif"), images, duration=30)  # save as gif
+def save_gif(images: list[Image.Image], gif_path: Path, fps: int) -> None:
+    imageio.mimsave(gif_path.with_suffix(".gif"), images, duration=1000/ fps)  # save as gif
 
 
 def load_images(img_folder: Path, filter_suffix: str) -> list[PIL.Image.Image]:

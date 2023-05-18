@@ -9,7 +9,11 @@ def convert(
     max_size: float | None = None,
     min_size: float | None = None,
     filter_suffix: str | None = None,
+    fps: int = 30,
+    size: int = 64
 ):
+    if filter_suffix == '*':
+        filter_suffix = None
     try:
         if img_path.is_dir():
             images = load_images(img_path, filter_suffix)
@@ -26,10 +30,10 @@ def convert(
     if out_suffix in [".mp4", ".gif"]:
         # Save as mp4 or gif if multiple images are found
         image_list = [img_tuple[0] for img_tuple in images]
-        if out_suffix == "mp4":
-            save_mp4(image_list, img_path.with_name(img_path.stem))
+        if out_suffix == ".mp4":
+            save_mp4(image_list, img_path.with_name(img_path.stem), fps)
         else:
-            save_gif(image_list, img_path.with_name(img_path.stem))
+            save_gif(image_list, img_path.with_name(img_path.stem), fps)
     else:
         for image, filename in images:
             if image is None:
@@ -42,6 +46,8 @@ def convert(
                 save_tif(image, filename, max_size, min_size)
             elif out_suffix == ".pdf":
                 save_pdf(image, filename, max_size, min_size)
+            elif out_suffix == ".ico":
+                save_ico(image, filename, size=size)
             else:
                 raise NotImplementedError
 
