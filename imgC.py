@@ -70,14 +70,17 @@ if __name__ == "__main__":
         "--suffix",
         type=str,
         help="Suffix of the output image. "
-        "Currently implemented: 'png', 'jpg', 'tif', 'pdf', 'mp4', 'gif'",
+        "Currently implemented: 'png', 'jpg', 'tif', 'pdf', 'mp4', 'gif', 'ico'",
     )
-    parser.add_argument("--min", type=float, help="max image size in MB", default=None)
-    parser.add_argument("--max", type=float, help="max image size in MB", default=None)
+    parser.add_argument("--min", type=float, help="Minimum image size in MB", default=None)
+    parser.add_argument("--max", type=float, help="Maximum image size in MB", default=None)
+    parser.add_argument("--fps", type=int, help="Frames per second for video output", default=30)
+    parser.add_argument("--size", type=int, help="Icon size for ICO output", default=64)
 
     args = parser.parse_args()
     args.suffix = args.suffix if "." in args.suffix else f".{args.suffix}"
     args.filter_suffix = (
         args.filter_suffix if "." in args.filter_suffix else f".{args.filter_suffix}"
     )
-    convert(args.filename, args.suffix, args.max, args.min, args.filter_suffix)
+    convert(args.filename, args.suffix, args.max, args.min, args.filter_suffix, args.fps, args.size)
+
