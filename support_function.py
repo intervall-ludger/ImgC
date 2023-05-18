@@ -7,7 +7,10 @@ from typing import Tuple
 import PIL.Image
 from pdf2image import convert_from_path
 from PIL import Image
-
+import imageio
+import pydicom
+import numpy as np
+import natsort
 
 def save(
     org_image: Image.Image,
@@ -84,10 +87,15 @@ def save_pdf(
     image = image.convert("RGB")
     save(image, img_path.with_suffix(".pdf"), max_size, min_size)
 
+def save_mp4(images: list[Image.Image], video_path: Path) -> None:
+    imageio.mimsave(video_path.with_suffix(".mp4"), images, duration=30)  # save as mp4
+
+def save_gif(images: list[Image.Image], gif_path: Path) -> None:
+    imageio.mimsave(gif_path.with_suffix(".gif"), images, duration=30)  # save as gif
 
 def load_images(img_folder: Path, filter_suffix: str) -> list[PIL.Image.Image]:
     images = []
-    for img_path in img_folder.glob("*"):
+    for img_path in natsort.natsorted(img_folder.glob("*")):
         if filter_suffix is not None:
             if img_path.suffix != filter_suffix:
                 continue
@@ -120,6 +128,21 @@ def load_image(img_path: Path) -> Tuple:
         return output
     if img_path.suffix in [".jpg", ".png", ".tif"]:
         return Image.open(img_path), img_path
+    if img_path.suffix == ".dcm":  # handle dicom files
+        dicom = pydicom.dcmread(str(img_path))
+        array = dicom.pixel_array
+
+        # Scale image to the range 0-255
+        array = array - array.min()
+        array = array / array.max()
+        array = (array * 255).astype(np.uint8)
+
+        array = np.stack((array,) * 3, axis=-1)
+
+        # Create a PIL image
+        image = Image.fromarray(array, 'RGB')
+
+        return image, img_path
     return None, ""
 
 

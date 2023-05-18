@@ -23,19 +23,28 @@ def convert(
     except AttributeError as e:
         print(f"Invalid input path: {img_path}")
         return None
-    for image, filename in images:
-        if image is None:
-            continue
-        if out_suffix == "jpg":
-            save_jpg(image, filename, max_size, min_size)
-        elif out_suffix == "png":
-            save_png(image, filename, max_size, min_size)
-        elif out_suffix == "tif":
-            save_tif(image, filename, max_size, min_size)
-        elif out_suffix == "pdf":
-            save_pdf(image, filename, max_size, min_size)
+    if out_suffix in ["mp4", "gif"]:
+        # Save as mp4 or gif if multiple images are found
+        image_list = [img_tuple[0] for img_tuple in images]
+        if out_suffix == "mp4":
+            save_mp4(image_list, img_path.with_name(img_path.stem))
         else:
-            raise NotImplementedError
+            save_gif(image_list, img_path.with_name(img_path.stem))
+    else:
+        for image, filename in images:
+            if image is None:
+                continue
+            if out_suffix == "jpg":
+                save_jpg(image, filename, max_size, min_size)
+            elif out_suffix == "png":
+                save_png(image, filename, max_size, min_size)
+            elif out_suffix == "tif":
+                save_tif(image, filename, max_size, min_size)
+            elif out_suffix == "pdf":
+                save_pdf(image, filename, max_size, min_size)
+            else:
+                raise NotImplementedError
+
 
 
 if __name__ == "__main__":
@@ -56,10 +65,10 @@ if __name__ == "__main__":
         "--suffix",
         type=str,
         help="Suffix of the output image. "
-        "Currently implemented: 'png', 'jpg', 'tif', 'pdf'",
+        "Currently implemented: 'png', 'jpg', 'tif', 'pdf', 'mp4', 'gif'",
     )
     parser.add_argument("--min", type=float, help="max image size in MB", default=None)
     parser.add_argument("--max", type=float, help="max image size in MB", default=None)
 
     args = parser.parse_args()
-    convert(args.filename, args.suffix, args.max, args.min)
+    convert(args.filename, args.suffix, args.max, args.min, args.filter_suffix)
