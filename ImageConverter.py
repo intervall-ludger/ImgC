@@ -1,11 +1,12 @@
-import tkinter as tk
-from tkinter import ttk, filedialog, StringVar, PhotoImage
-from pathlib import Path
-from imgC import convert
-from ttkthemes import ThemedStyle
 import threading
-import time
-from tkinter import ttk, Toplevel, Spinbox
+import tkinter as tk
+from pathlib import Path
+from tkinter import filedialog, StringVar
+from tkinter import ttk, Toplevel
+
+from ttkthemes import ThemedStyle
+
+from imgC import convert
 
 
 def run_conversion():
@@ -64,7 +65,7 @@ def browse_dir():
 root = tk.Tk()
 style = ThemedStyle(root)
 style.set_theme("clam")
-root.title("ImgC - Optimizer for image format and size")
+root.title("ImageConverter - Change image format and size")
 
 mainframe = ttk.Frame(root, padding="3 3 12 12")
 mainframe.grid(column=0, row=0, sticky=(tk.N, tk.W, tk.E, tk.S))
@@ -72,8 +73,8 @@ mainframe.columnconfigure(0, weight=1)
 mainframe.rowconfigure(0, weight=1)
 
 filepath = StringVar()
-out_suffixes = [".jpg", ".png", ".tif", ".pdf", ".mp4", ".gif", '.ico']
-in_suffixes = ["*", ".jpg", ".png", ".tif", ".pdf", ".dcm"]
+out_suffixes = [".jpg", ".jpg", ".png", ".tif", ".pdf", ".mp4", ".gif", '.ico']
+in_suffixes = ["*", "*", ".jpg", ".png", ".tif", ".pdf", ".dcm"]
 filter_suffix = StringVar()
 suffix = StringVar()
 suffix.set(".jpg")  # set default value
@@ -97,16 +98,18 @@ ttk.Button(mainframe, text="Open Directory", command=browse_dir).grid(
 )
 
 ttk.Label(mainframe, text="Input Filter:").grid(column=1, row=2, sticky=tk.W)
-filter_suffix_menu = tk.OptionMenu(mainframe, filter_suffix, *in_suffixes)
+filter_suffix_menu = ttk.OptionMenu(mainframe, filter_suffix, *in_suffixes)
 filter_suffix_menu.grid(column=2, row=2, sticky=tk.W)
 
 ttk.Label(mainframe, text="Output:").grid(column=1, row=3, sticky=tk.W)
-suffix_menu = tk.OptionMenu(mainframe, suffix, *out_suffixes)
+suffix_menu = ttk.OptionMenu(mainframe, suffix, *out_suffixes)
 suffix_menu.grid(column=2, row=3, sticky=tk.W)
 
 min_size_label = ttk.Label(mainframe, text="Min size in MB:")
 min_size_label.grid(column=3, row=2, sticky=tk.W)
-min_size = Spinbox(mainframe, from_=0.0, to=1000.0, increment=0.1, format="%.1f")
+min_size_var = tk.DoubleVar()
+min_size_var.set(0.0)
+min_size = ttk.Spinbox(mainframe, from_=0.0, to=1000.0, increment=0.1, format="%.1f", textvariable=min_size_var,)
 min_size.grid(column=4, row=2, sticky=tk.W)
 
 max_size_label = ttk.Label(mainframe, text="Max size in MB:")
@@ -169,10 +172,10 @@ def update_gui(*args):
 
 suffix.trace_add("write", update_gui)
 
-
-ttk.Button(mainframe, text="Run", command=run_conversion).grid(
-    column=1, row=6, columnspan=4
+ttk.Button(mainframe, text="Convert", command=run_conversion).grid(
+    column=1, row=6, columnspan=4, sticky=(tk.E, tk.W)
 )
+
 
 for child in mainframe.winfo_children():
     child.grid_configure(padx=5, pady=5)
