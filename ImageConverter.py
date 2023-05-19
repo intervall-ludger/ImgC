@@ -74,7 +74,7 @@ mainframe.rowconfigure(0, weight=1)
 
 filepath = StringVar()
 out_suffixes = [".jpg", ".jpg", ".png", ".tif", ".pdf", ".mp4", ".gif", '.ico']
-in_suffixes = ["*", "*", ".jpg", ".png", ".tif", ".pdf", ".dcm"]
+in_suffixes = ["*", "*", ".jpg", ".png", ".tif", ".pdf", ".dcm", ".mp4", ".gif"]
 filter_suffix = StringVar()
 suffix = StringVar()
 suffix.set(".jpg")  # set default value
@@ -83,7 +83,7 @@ filter_suffix.set("*")  # set default value
 fps = tk.DoubleVar()
 fps.set(30.0)  # set default value
 size = tk.IntVar()
-size.set(64)  # set default value
+size.set(256)  # set default value
 
 ttk.Label(mainframe, text="File/Directory Path:").grid(column=1, row=1, sticky=tk.W)
 ttk.Entry(mainframe, width=50, textvariable=filepath).grid(
@@ -130,7 +130,7 @@ fps_label = ttk.Label(mainframe, text="FPS:")
 fps_spinbox = ttk.Spinbox(mainframe, from_=0.1, to=60.0, increment=0.1, format="%.1f", textvariable=fps)
 
 ico_size_label = ttk.Label(mainframe, text="Size:")
-ico_size_spinbox = ttk.Spinbox(mainframe, from_=32, to=256.0, increment=1, format="%.1f", textvariable=size)
+ico_size_spinbox = ttk.Spinbox(mainframe, from_=32, to=1000.0, increment=1, format="%.1f", textvariable=size)
 def update_gui(*args):
     if suffix.get() in [".mp4", ".gif"]:
         # Hide the min/max size options and show the fps option
@@ -143,6 +143,9 @@ def update_gui(*args):
 
         fps_label.grid(column=3, row=2, sticky=tk.W)
         fps_spinbox.grid(column=4, row=2, sticky=tk.W)
+        if suffix.get() == ".gif":
+            ico_size_label.grid(column=3, row=3, sticky=tk.W)
+            ico_size_spinbox.grid(column=4, row=3, sticky=tk.W)
     elif suffix.get() == '.ico':
         min_size_label.grid_remove()
         min_size.grid_remove()

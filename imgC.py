@@ -33,7 +33,7 @@ def convert(
         if out_suffix == ".mp4":
             save_mp4(image_list, img_path.with_name(img_path.stem), fps)
         else:
-            save_gif(image_list, img_path.with_name(img_path.stem), fps)
+            save_gif(image_list, img_path.with_name(img_path.stem), fps, max_size=size)
     else:
         for image, filename in images:
             if image is None:
@@ -70,7 +70,7 @@ if __name__ == "__main__":
         "--suffix",
         type=str,
         help="Suffix of the output image. "
-        "Currently implemented: 'png', 'jpg', 'tif', 'pdf', 'mp4', 'gif', 'ico'",
+        "Currently implemented: 'png', 'jpg', 'tif', 'pdf', 'mp4', 'gif', 'ico', 'mp4', 'gif'",
     )
     parser.add_argument("--min", type=float, help="Minimum image size in MB", default=None)
     parser.add_argument("--max", type=float, help="Maximum image size in MB", default=None)

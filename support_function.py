@@ -108,8 +108,15 @@ def save_mp4(images: list[Image.Image], video_path: Path, fps: int) -> None:
     imageio.mimsave(video_path.with_suffix(".mp4"), images, fps=fps)  # save as mp4
 
 
-def save_gif(images: list[Image.Image], gif_path: Path, fps: int) -> None:
-    imageio.mimsave(gif_path.with_suffix(".gif"), images, duration=1000/ fps)  # save as gif
+def save_gif(images: list[Image.Image], gif_path: Path, fps: int, max_size: int) -> None:
+    def resize_image(image: Image, max_size: int) -> Image:
+        ratio = max_size / max(image.size)
+        new_size = tuple([int(x * ratio) for x in image.size])
+        resized_image = image.resize(new_size, Image.ANTIALIAS)
+        return resized_image
+    if images[0].size[0] > max_size or images[0].size[1] > max_size:
+        images = [resize_image(_, max_size) for _ in images]
+    imageio.mimsave(gif_path.with_suffix(".gif"), images, duration=int(1000/ fps))  # save as gif
 
 
 def load_images(img_folder: Path, filter_suffix: str) -> list[PIL.Image.Image]:
@@ -145,9 +152,9 @@ def load_image(img_path: Path) -> Tuple:
                 (pdf, Path(str(img_path).replace(img_path.suffix, f"_{i}.pdf")))
             )
         return output
-    if img_path.suffix in [".jpg", ".png", ".tif"]:
+    elif img_path.suffix in [".jpg", ".png", ".tif"]:
         return Image.open(img_path), img_path
-    if img_path.suffix == ".dcm":  # handle dicom files
+    elif img_path.suffix == ".dcm":  # handle dicom files
         dicom = pydicom.dcmread(str(img_path))
         array = dicom.pixel_array
 
@@ -162,6 +169,13 @@ def load_image(img_path: Path) -> Tuple:
         image = Image.fromarray(array, "RGB")
 
         return image, img_path
+    elif img_path.suffix in [".gif", ".mp4"]:
+        output = []
+        reader = imageio.get_reader(img_path)
+        for i, img in enumerate(reader):
+            pil_img = Image.fromarray(img)
+            output.append((pil_img, Path(str(img_path).replace(img_path.suffix, f"_{i}{img_path.suffix}"))))
+        return output
     return None, ""
 
 
