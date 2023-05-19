@@ -33,9 +33,19 @@ python imgc.py -f /path/to/image -s output_suffix [--filter_suffix input_suffix]
 
 ### Graphical User Interface
 
-You can also use ImgC through a GUI by running **'ImageConverter.py'**. This offers the same functionality as the CLI in a more user-friendly format.
+You can also use ImgC through a GUI by running **'ImageConverter.py'**. This offers the same functionality as the CLI in a more user-friendly format. It provides an easy to navigate interface, with options to select files, set parameters, and start the conversion process.
 
 ![](/assets/img.png)
+
+For convenience, we have provided a standalone executable and an installer. These are located in the **'dist/'** and **'Output/'** directories respectively.
+
+- The standalone executable located at **'dist/ImageConverter.exe'** is an all-in-one file, which means it can be run directly without any installation. Just double click on the **'.exe'** file and the GUI will open, ready for you to use.
+
+- The installer located at **'Output/ImgC_setup.exe'** can be used to install the ImgC application on your system. Just run the **'.exe'** file, follow the on-screen prompts to install the application, and then you can access the ImgC GUI through the start menu or a shortcut on your desktop.
+
+These options provide flexibility depending on whether you want to install the software or simply run it as a standalone application.
+
+
 
 ## Example
 
