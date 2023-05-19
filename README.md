@@ -2,7 +2,7 @@
 
 # ImgC - Image Optimizer
 
-ImgC is a tool for optimizing images in terms of format and size. It can handle single images or a folder of images and supports the following output formats: **'png'**, **'jpg'**, **'tif'**, and **'pdf'**.
+ImgC is a tool for optimizing images in terms of format and size. It can handle single images or a folder of images and supports the following output formats: **'png'**, **'jpg'**, **'tif'**, **'pdf'**, **'mp4'**, **'gif'**, and **'ico'**.
 
 ## Installation
 
@@ -13,10 +13,14 @@ pip install -r requirements.txt
 ```
 
 ## Usage
+
+To use ImgC, you can run the img.py function with command line arguments or use the graphical user interface (GUI).
+
+### Command Line Interface (CLI)
 To use ImgC, run the img.py function with the following arguments:
 
 ```basch
-python imgc.py -f /path/to/image -s output_suffix [--filter_suffix input_suffix] [--max max_size] [--min min_size]
+python imgc.py -f /path/to/image -s output_suffix [--filter_suffix input_suffix] [--max max_size] [--min min_size] [--fps frame_rate] [--size icon_size]
 ```
 
 - **-f /path/to/image**: The path to the image file or folder of images to be optimized.
@@ -24,6 +28,14 @@ python imgc.py -f /path/to/image -s output_suffix [--filter_suffix input_suffix]
 - **--filter_suffix input_suffix**: (Optional) The suffix of the input image(s). If not specified, all image types will be processed.
 - **--max max_size**: (Optional) The maximum size of the output image(s) in megabytes. If not specified, the size will not be constrained.
 - **--min min_size**: (Optional) The minimum size of the output image(s) in megabytes. If not specified, the size will not be constrained.
+- **--fps frame_rate**: (Optional) The desired frame rate for output .mp4 or .gif files. If not specified, the default frame rate is 30 fps.
+- **--size icon_size**: (Optional) The desired dimensions (in pixels) of the output .ico file. If not specified, the default size is 64x64.
+
+### Graphical User Interface
+
+You can also use ImgC through a GUI by running **'ImageConverter.py'**. This offers the same functionality as the CLI in a more user-friendly format.
+
+![](/assets/img.png)
 
 ## Example
 
