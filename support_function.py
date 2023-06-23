@@ -1,4 +1,5 @@
 import os
+
 # import module
 from pathlib import Path
 from typing import Tuple
@@ -19,12 +20,27 @@ def save(
     max_size: float | None,
     min_size: float | None,
     min_quality: int = 95,
+    max_pixel_size: int = 8000,
 ) -> None:
     quality = 100
     old_size = 0
     optimize = True
     # Save the original image to the new path
     # If optimization fails, try saving again without optimization
+    img_size = org_image.size
+    if img_size[0] > max_pixel_size or img_size[1] > max_pixel_size:
+        if img_size[0] > max_pixel_size:
+            img_size = (
+                max_pixel_size,
+                int(img_size[1] / (img_size[0] / max_pixel_size)),
+            )
+        else:
+            img_size = (
+                int(img_size[0] / (img_size[1] / max_pixel_size)),
+                max_pixel_size,
+            )
+        org_image = org_image.resize(img_size)
+
     try:
         org_image.save(new_path, optimze=optimize, quality=quality)
     except:
@@ -88,7 +104,7 @@ def save_ico(image, filename, size: int = 64):
     image = image.filter(sharper)
 
     # Save the image in ICO format
-    image.save(filename.with_suffix('.ico'), format='ICO', size=(size, size))
+    image.save(filename.with_suffix(".ico"), format="ICO", size=(size, size))
 
 
 def save_tif(
@@ -108,15 +124,20 @@ def save_mp4(images: list[Image.Image], video_path: Path, fps: int) -> None:
     imageio.mimsave(video_path.with_suffix(".mp4"), images, fps=fps)  # save as mp4
 
 
-def save_gif(images: list[Image.Image], gif_path: Path, fps: int, max_size: int) -> None:
+def save_gif(
+    images: list[Image.Image], gif_path: Path, fps: int, max_size: int
+) -> None:
     def resize_image(image: Image, max_size: int) -> Image:
         ratio = max_size / max(image.size)
         new_size = tuple([int(x * ratio) for x in image.size])
         resized_image = image.resize(new_size, Image.ANTIALIAS)
         return resized_image
+
     if images[0].size[0] > max_size or images[0].size[1] > max_size:
         images = [resize_image(_, max_size) for _ in images]
-    imageio.mimsave(gif_path.with_suffix(".gif"), images, duration=int(1000/ fps))  # save as gif
+    imageio.mimsave(
+        gif_path.with_suffix(".gif"), images, duration=int(1000 / fps)
+    )  # save as gif
 
 
 def load_images(img_folder: Path, filter_suffix: str) -> list[PIL.Image.Image]:
@@ -174,7 +195,14 @@ def load_image(img_path: Path) -> Tuple:
         reader = imageio.get_reader(img_path)
         for i, img in enumerate(reader):
             pil_img = Image.fromarray(img)
-            output.append((pil_img, Path(str(img_path).replace(img_path.suffix, f"_{i}{img_path.suffix}"))))
+            output.append(
+                (
+                    pil_img,
+                    Path(
+                        str(img_path).replace(img_path.suffix, f"_{i}{img_path.suffix}")
+                    ),
+                )
+            )
         return output
     return None, ""
 

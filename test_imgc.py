@@ -21,7 +21,6 @@ def generate_test_data():
         test_image.save(base_path / f"test_data/images/test_image_{i}.jpg")
 
 
-
 class TestImgc(unittest.TestCase):
     def setUp(self) -> None:
         generate_test_data()
@@ -40,7 +39,7 @@ class TestImgc(unittest.TestCase):
         img_folder = base_path / "test_data/images"
 
         # Test converting a folder of images to mp4
-        convert(img_folder, ".mp4", fps=30, filter_suffix='.jpg')
+        convert(img_folder, ".mp4", fps=30, filter_suffix=".jpg")
         self.assertTrue((Path(f"{img_folder}.mp4")).exists())
 
         # Test converting with a specified input suffix
@@ -52,7 +51,6 @@ class TestImgc(unittest.TestCase):
         convert(img_folder, ".pdf", filter_suffix=".tif")
         for img_path in img_folder.glob("*.pdf"):
             self.assertTrue(img_path.exists())
-
 
 
 if __name__ == "__main__":

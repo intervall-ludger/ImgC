@@ -35,14 +35,14 @@ def run_conversion():
 
     def execute_conversion():
         convert(
-                Path(filepath.get()),
-                suffix.get(),
-                float(min_size.get()),
-                float(max_size.get()),
-                filter_suffix.get(),
-                fps.get(),
-                size.get()
-            )
+            Path(filepath.get()),
+            suffix.get(),
+            float(max_size.get()),
+            float(min_size.get()),
+            filter_suffix.get(),
+            fps.get(),
+            size.get(),
+        )
         if load_win.winfo_exists():
             load_win.destroy()
 
@@ -73,7 +73,7 @@ mainframe.columnconfigure(0, weight=1)
 mainframe.rowconfigure(0, weight=1)
 
 filepath = StringVar()
-out_suffixes = [".jpg", ".jpg", ".png", ".tif", ".pdf", ".mp4", ".gif", '.ico']
+out_suffixes = [".jpg", ".jpg", ".png", ".tif", ".pdf", ".mp4", ".gif", ".ico"]
 in_suffixes = ["*", "*", ".jpg", ".png", ".tif", ".pdf", ".dcm", ".mp4", ".gif"]
 filter_suffix = StringVar()
 suffix = StringVar()
@@ -109,7 +109,14 @@ min_size_label = ttk.Label(mainframe, text="Min size in MB:")
 min_size_label.grid(column=3, row=2, sticky=tk.W)
 min_size_var = tk.DoubleVar()
 min_size_var.set(0.0)
-min_size = ttk.Spinbox(mainframe, from_=0.0, to=1000.0, increment=0.1, format="%.1f", textvariable=min_size_var,)
+min_size = ttk.Spinbox(
+    mainframe,
+    from_=0.0,
+    to=1000.0,
+    increment=0.1,
+    format="%.1f",
+    textvariable=min_size_var,
+)
 min_size.grid(column=4, row=2, sticky=tk.W)
 
 max_size_label = ttk.Label(mainframe, text="Max size in MB:")
@@ -127,10 +134,16 @@ max_size = ttk.Spinbox(
 max_size.grid(column=4, row=3, sticky=tk.W)
 
 fps_label = ttk.Label(mainframe, text="FPS:")
-fps_spinbox = ttk.Spinbox(mainframe, from_=0.1, to=60.0, increment=0.1, format="%.1f", textvariable=fps)
+fps_spinbox = ttk.Spinbox(
+    mainframe, from_=0.1, to=60.0, increment=0.1, format="%.1f", textvariable=fps
+)
 
 ico_size_label = ttk.Label(mainframe, text="Size:")
-ico_size_spinbox = ttk.Spinbox(mainframe, from_=32, to=1000.0, increment=1, format="%.1f", textvariable=size)
+ico_size_spinbox = ttk.Spinbox(
+    mainframe, from_=32, to=1000.0, increment=1, format="%.1f", textvariable=size
+)
+
+
 def update_gui(*args):
     if suffix.get() in [".mp4", ".gif"]:
         # Hide the min/max size options and show the fps option
@@ -146,7 +159,7 @@ def update_gui(*args):
         if suffix.get() == ".gif":
             ico_size_label.grid(column=3, row=3, sticky=tk.W)
             ico_size_spinbox.grid(column=4, row=3, sticky=tk.W)
-    elif suffix.get() == '.ico':
+    elif suffix.get() == ".ico":
         min_size_label.grid_remove()
         min_size.grid_remove()
         max_size_label.grid_remove()
