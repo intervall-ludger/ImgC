@@ -1,8 +1,8 @@
 [Setup]
 AppId={{3F96B359-E707-4242-42B0-427B28D4958A}}
 AppName=Image Converter
-AppVersion=1.01
-;AppVerName=Image Converter 1.01
+AppVersion=1.02
+;AppVerName=Image Converter 1.02
 AppPublisher=Karl Ludger Radke
 DefaultDirName={pf}\Image Converter
 DefaultGroupName=Image Converter
