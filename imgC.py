@@ -34,12 +34,21 @@ def convert(
             if filter_suffix not in [".mp4", ".gif"]:
                 save_mp4(image_list, img_path.with_name(img_path.stem), fps)
             else:
-                save_mp4(image_list, images[0][1].parent / images[0][1].name.split('_')[-2], fps)
+                save_mp4(
+                    image_list,
+                    images[0][1].parent / images[0][1].name.split("_")[-2],
+                    fps,
+                )
         else:
             if filter_suffix not in [".mp4", ".gif"]:
                 save_gif(image_list, img_path.with_name(img_path.stem), fps)
             else:
-                save_gif(image_list, images[0][1].parent / images[0][1].name.split('_')[-2], fps, max_size=size)
+                save_gif(
+                    image_list,
+                    images[0][1].parent / images[0][1].name.split("_")[-2],
+                    fps,
+                    max_size=size,
+                )
     else:
         for image, filename in images:
             if image is None:
