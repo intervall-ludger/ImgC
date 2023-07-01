@@ -136,7 +136,7 @@ def save_gif(
     if images[0].size[0] > max_size or images[0].size[1] > max_size:
         images = [resize_image(_, max_size) for _ in images]
     imageio.mimsave(
-        gif_path.with_suffix(".gif"), images, duration=int(1000 / fps)
+        gif_path.with_suffix(".gif"), images[::int(60/fps)], duration=int(1000 / fps)
     )  # save as gif
 
 
