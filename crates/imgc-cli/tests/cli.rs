@@ -125,11 +125,15 @@ fn converts_heic_to_png() {
     let src = dir.path().join("photo.heic");
     std::fs::copy(fixture("sample.heic"), &src).unwrap();
 
-    let status = imgc()
+    let output = imgc()
         .args(["-f", src.to_str().unwrap(), "-s", "png"])
-        .status()
+        .output()
         .unwrap();
-    assert!(status.success(), "heic conversion exited non-zero");
+    assert!(
+        output.status.success(),
+        "heic conversion failed: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
 
     let out = src.with_extension("png");
     assert!(out.exists(), "heic: png output missing");
