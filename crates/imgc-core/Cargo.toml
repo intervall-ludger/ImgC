@@ -15,7 +15,8 @@ image.workspace = true
 dicom-object = { version = "0.7", default-features = false }
 dicom-pixeldata = { version = "0.7", default-features = false, features = ["image"] }
 thiserror = "2"
-libheif-rs = { version = "2.7", optional = true, default-features = false, features = ["v1_19"] }
+# Target the 1.17 API so it builds against the libheif shipped by common distros.
+libheif-rs = { version = "2.7", optional = true, default-features = false, features = ["v1_17"] }
 
 [dev-dependencies]
 dicom-core = "0.7"
