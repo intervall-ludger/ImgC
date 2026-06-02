@@ -1,0 +1,22 @@
+[package]
+name = "imgc-core"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[features]
+# HEIC/HEIF decoding via the system libheif (C library). Off by default so the
+# default build and the wasm target stay pure Rust with no native dependency.
+heic = ["dep:libheif-rs"]
+
+[dependencies]
+image.workspace = true
+dicom-object = { version = "0.7", default-features = false }
+dicom-pixeldata = { version = "0.7", default-features = false, features = ["image"] }
+thiserror = "2"
+libheif-rs = { version = "2.7", optional = true, default-features = false, features = ["v1_19"] }
+
+[dev-dependencies]
+dicom-core = "0.7"
+dicom-dictionary-std = "0.7"

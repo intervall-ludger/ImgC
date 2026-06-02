@@ -1,101 +1,167 @@
-[![Actions Status](https://github.com/ludgerradke/ImgC/actions/workflows/test.yml/badge.svg)](https://github.com/ludgerradke/ImgC/actions/workflows/test.yml)
+[![CI](https://github.com/ludgerradke/ImgC/actions/workflows/ci.yml/badge.svg)](https://github.com/ludgerradke/ImgC/actions/workflows/ci.yml)
 
-# ImgC - Image Optimizer
+# ImgC — Image Optimizer
 
-ImgC is a tool for optimizing images in terms of format and size. It can handle single images or a folder of images and supports the following output formats: **'png'**, **'jpg'**, **'tif'**, **'pdf'**, **'mp4'**, **'gif'**, and **'ico'**.
+ImgC converts an image (or a whole folder) between formats and, on request,
+**squeezes it to a target file size** — it steps down the JPEG quality and
+downscales until the result fits your `--max` (or upscales to reach a `--min`).
 
-## Installation
+One Rust core, two front-ends:
 
-To use ImgC, you will need to install the required dependencies listed in the **'requirements.txt'** file:
+- **Web app** — Rust compiled to WebAssembly, runs entirely in your browser.
+  Images are never uploaded; nothing leaves your device.
+- **CLI** — a native `imgc` binary for scripting and batch jobs.
 
-```basch
-pip install -r requirements.txt
-```
+**▶ Live app: https://ludgerradke.github.io/ImgC/**
 
-## Usage
+## Why
 
-To use ImgC, you can run the img.py function with command line arguments or use the graphical user interface (GUI).
+ImgC grew out of academic writing. Two problems kept coming up:
 
-### Command Line Interface (CLI)
-To use ImgC, run the img.py function with the following arguments:
+1. **Journals demand a specific format** — TIFF, a PDF figure, a fixed
+   resolution — so you have to convert your figures anyway.
+2. **Word ruins high-resolution images.** Drop a large PNG into a document and
+   Word silently re-compresses it on its own terms, often turning a crisp
+   figure into a blurry one for your co-authors and reviewers.
 
-```basch
-python imgc.py -f /path/to/image -s output_suffix [--filter_suffix input_suffix] [--max max_size] [--min min_size] [--fps frame_rate] [--size icon_size]
-```
+The cure is to **compress deliberately before embedding**: shrink the figure to
+a sensible size yourself, then place the already-optimized file. Word is left
+with nothing to mangle, the document stays small, and everyone sees the figure
+the way you intended.
 
-- **-f /path/to/image**: The path to the image file or folder of images to be optimized.
-- **-s output_suffix**: The desired output format for the image(s).
-- **--filter_suffix input_suffix**: (Optional) The suffix of the input image(s). If not specified, all image types will be processed.
-- **--max max_size**: (Optional) The maximum size of the output image(s) in megabytes. If not specified, the size will not be constrained.
-- **--min min_size**: (Optional) The minimum size of the output image(s) in megabytes. If not specified, the size will not be constrained.
-- **--fps frame_rate**: (Optional) The desired frame rate for output .mp4 or .gif files. If not specified, the default frame rate is 30 fps.
-- **--size icon_size**: (Optional) The desired dimensions (in pixels) of the output .ico file. If not specified, the default size is 64x64.
-
-### Graphical User Interface
-
-You can also use ImgC through a GUI by running **'ImageConverter.py'**. This offers the same functionality as the CLI in a more user-friendly format. It provides an easy to navigate interface, with options to select files, set parameters, and start the conversion process.
-
-![](/assets/img.png)
-
-For convenience, we have provided a standalone executable and an installer. These are located in the **'dist/'** and **'Output/'** directories respectively.
-
-- The standalone executable located at **'dist/ImageConverter.exe'** is an all-in-one file, which means it can be run directly without any installation. Just double click on the **'.exe'** file and the GUI will open, ready for you to use.
-
-- The installer located at **'Output/ImgC_setup.exe'** can be used to install the ImgC application on your system. Just run the **'.exe'** file, follow the on-screen prompts to install the application, and then you can access the ImgC GUI through the start menu or a shortcut on your desktop.
-
-These options provide flexibility depending on whether you want to install the software or simply run it as a standalone application.
-
-
-
-## Example
-
-To convert all **'jpg'** images in the **'/path/to/images'** folder to **'png'** format with a maximum size of 2 MB and a minimum size of 1 MB, use the following command:
-
-```basch
-python imgc.py -f /path/to/images -s png --filter_suffix jpg --max 2 --min 1
-```
-
-# Testing the imgc script
-
-To test the functionality of the **imgc** script, you can use the unit tests provided in the **test_imgc.py** file. These tests will verify that the script is able to correctly convert images and apply size constraints.
-
-To run the tests, make sure you have the **unittest** module installed, and then run the following command:
-
-```basch
-python -m unittest test_imgc
-```
-
-# Contributing
-
-We welcome contributions to the imgc project! If you have ideas for how to improve the script or have found a bug, please don't hesitate to open an issue or submit a pull request.
-
-To contribute to the project, follow these steps:
-
-1. Fork the repository.
-2. Create a new branch for your changes.
-3. Make your changes and commit them to your branch.
-4. Push your branch to your fork on GitHub.
-5. Create a pull request to the imgc repository.
-
-We appreciate any and all contributions, no matter how big or small. Thank you for considering contributing to the imgc project!
-
-Note: Please run the GitHocks before you create a Pull Request.
-
-### Git hocks
-Install "pre-commit"
 ```bash
-pip install pre-commit
+# Typical figure prep: a 300-dpi PNG export, capped at 800 KB, ready for Word
+imgc -f figure_1.png -s jpg --max 0.8
 ```
 
-then run:
+## Supported formats
+
+| Direction | Formats |
+| --- | --- |
+| **Read** | PNG, JPG, TIFF, GIF, ICO, WebP, BMP, **DICOM** (`.dcm`, uncompressed), **HEIC/HEIF** (CLI only — see [HEIC input](#heicheif-input-optional)) |
+| **Write** | PNG, JPG, TIFF, GIF (animated), ICO, WebP (lossless), PDF |
+
+Size targeting (`--max`/`--min`) applies to the raster and PDF outputs.
+
+## Web app
+
+Open the [live app](https://ludgerradke.github.io/ImgC/) (or run it locally —
+see [below](#building--running-locally)), drop in one or more images, choose the
+output format and options, and download the result. Everything happens locally
+via WebAssembly; there is no backend. Choosing **GIF** with several images
+combines them into one animated GIF.
+
+## CLI
+
+Run straight from the workspace:
+
 ```bash
-pre-commit install
+cargo run -p imgc-cli -- -f /path/to/image -s png [options]
 ```
 
-# License
-ImgC is licensed under the GNU GENERAL PUBLIC LICENSE Version 3. See the [LICENSE](./LICENSE) file for more information.
+…or install the `imgc` binary:
 
-# Support
+```bash
+cargo install --path crates/imgc-cli
+```
 
-If you really like this repository and find it useful, please consider (★) starring it, so that it can reach a broader audience of like-minded people.
+### Options
 
+| Flag | Description |
+| --- | --- |
+| `-f, --filename` | Image file or folder of images to convert |
+| `-s, --suffix` | Output format: `png`, `jpg`, `tif`, `gif`, `ico`, `webp`, `pdf` |
+| `--filter_suffix` | In folder mode, only process inputs with this extension |
+| `--max` | Maximum output size in MB |
+| `--min` | Minimum output size in MB |
+| `--fps` | Frames per second for animated GIF output (default 30) |
+| `--size` | Pixel size for ICO output (default 64) |
+
+Pointing `-f` at a folder converts every matching file in place (next to the
+original). With `-s gif`, a folder of stills is combined into one animated GIF
+named after the folder.
+
+### Examples
+
+```bash
+# Convert to PNG, capped at 2 MB and at least 1 MB
+imgc -f photo.jpg -s png --max 2 --min 1
+
+# Convert every JPG in a folder to TIFF
+imgc -f ./shots -s tif --filter_suffix jpg
+
+# A 16-bit CT scan to a viewable PNG
+imgc -f scan.dcm -s png
+
+# A 24 fps animated GIF from a folder of frames
+imgc -f ./frames -s gif --fps 24
+```
+
+### HEIC/HEIF input (optional)
+
+HEIC has no usable pure-Rust decoder, so it lives behind the `heic` Cargo
+feature and relies on the system
+[`libheif`](https://github.com/strukturag/libheif) library. It is therefore
+**CLI-only** — the web build stays pure Rust with no native dependency.
+
+```bash
+# macOS:  brew install libheif
+# Debian: sudo apt-get install libheif-dev
+cargo install --path crates/imgc-cli --features heic
+imgc -f photo.heic -s jpg --max 0.5
+```
+
+## How it works
+
+```
+crates/
+  imgc-core/   platform-agnostic conversion library (bytes in -> bytes out)
+  imgc-cli/    native command-line interface
+  imgc-wasm/   wasm-bindgen bindings for the web app
+web/           static front-end (HTML/CSS/JS), loads the generated pkg/
+```
+
+All decoding, resizing, size-fitting and encoding lives in `imgc-core` and never
+touches the filesystem — bytes in, bytes out. The CLI handles file I/O, the web
+app handles browser I/O, and both call the exact same core, so they behave
+identically.
+
+## Building & running locally
+
+The CLI needs only a Rust toolchain. The web app additionally needs
+[`wasm-pack`](https://rustwasm.github.io/wasm-pack/):
+
+```bash
+# Build the WebAssembly bundle into web/pkg
+wasm-pack build crates/imgc-wasm --target web --out-dir ../../web/pkg --out-name imgc
+
+# Serve the static front-end (ES modules need HTTP, not file://)
+cd web && python3 -m http.server 8080
+# then open http://localhost:8080
+```
+
+## Development
+
+```bash
+cargo test --workspace      # unit + CLI integration tests (incl. a real DICOM)
+cargo fmt --all             # format
+cargo clippy --all-targets  # lint
+```
+
+CI runs format, clippy, the full test suite and a wasm build on every push; a
+separate job installs `libheif` and exercises the `heic` feature. Pushing to
+`main` rebuilds the WebAssembly bundle and deploys `web/` to GitHub Pages.
+
+> **One-time setup for deployment:** in the repository settings, set
+> *Pages → Build and deployment → Source* to **GitHub Actions**.
+
+## Notes & limitations
+
+- **WebP** output is lossless only — the pure-Rust encoder has no lossy mode yet.
+- **DICOM** input is read for uncompressed pixel data.
+- **HEIC/HEIF** input is CLI-only and needs `libheif`; HEIC output is not supported.
+- **MP4** is not supported; combine multiple images into an animated GIF instead.
+
+## License
+
+ImgC is licensed under the GNU General Public License v3. See [LICENSE](./LICENSE).

@@ -1,0 +1,22 @@
+[package]
+name = "imgc-cli"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[[bin]]
+name = "imgc"
+path = "src/main.rs"
+
+[features]
+# Enable HEIC/HEIF input (requires the system libheif library).
+heic = ["imgc-core/heic"]
+
+[dependencies]
+imgc-core = { path = "../imgc-core" }
+clap = { version = "4", features = ["derive"] }
+
+[dev-dependencies]
+image.workspace = true
+tempfile = "3"

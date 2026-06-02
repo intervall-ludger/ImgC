@@ -1,0 +1,27 @@
+[workspace]
+resolver = "2"
+members = ["crates/imgc-core", "crates/imgc-cli", "crates/imgc-wasm"]
+
+[workspace.package]
+version = "2.0.0"
+edition = "2021"
+license = "GPL-3.0-only"
+repository = "https://github.com/ludgerradke/ImgC"
+
+[workspace.dependencies]
+image = { version = "0.25", default-features = false, features = [
+    "png",
+    "jpeg",
+    "tiff",
+    "gif",
+    "ico",
+    "webp",
+    "bmp",
+] }
+
+[profile.release]
+opt-level = "z"
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = true

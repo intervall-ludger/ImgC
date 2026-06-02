@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ImgC - Image Optimizer</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <main class="card">
+        <h1>ImgC</h1>
+        <p class="tagline">Convert images between formats and shrink them to a target file size —
+        ideal for prepping figures before dropping them into a paper or Word document.
+        Runs entirely in your browser; nothing is uploaded.</p>
+
+        <div id="dropzone" class="dropzone">
+            <p>Drop images here or <label class="link" for="file-input">browse</label></p>
+            <input id="file-input" type="file" multiple accept="image/*,.dcm" hidden>
+            <ul id="file-list" class="file-list"></ul>
+        </div>
+
+        <div class="controls">
+            <label class="field">
+                <span>Output format</span>
+                <select id="format">
+                    <option value="jpg">JPG</option>
+                    <option value="png">PNG</option>
+                    <option value="tif">TIFF</option>
+                    <option value="webp">WebP (lossless)</option>
+                    <option value="gif">GIF (animated from multiple)</option>
+                    <option value="ico">ICO</option>
+                    <option value="pdf">PDF</option>
+                </select>
+            </label>
+
+            <label class="field" data-group="size">
+                <span>Min size (MB)</span>
+                <input id="min-size" type="number" min="0" step="0.1" placeholder="none">
+            </label>
+            <label class="field" data-group="size">
+                <span>Max size (MB)</span>
+                <input id="max-size" type="number" min="0" step="0.1" placeholder="none">
+            </label>
+
+            <label class="field" data-group="fps" hidden>
+                <span>FPS</span>
+                <input id="fps" type="number" min="1" max="60" step="1" value="30">
+            </label>
+            <label class="field" data-group="icon" hidden>
+                <span>Icon size (px)</span>
+                <input id="icon-size" type="number" min="16" max="256" step="1" value="64">
+            </label>
+        </div>
+
+        <button id="convert" class="convert" disabled>Convert</button>
+        <p id="status" class="status"></p>
+    </main>
+
+    <script type="module" src="app.js"></script>
+</body>
+</html>
