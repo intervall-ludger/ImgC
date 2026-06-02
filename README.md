@@ -1,4 +1,4 @@
-[![CI](https://github.com/ludgerradke/ImgC/actions/workflows/ci.yml/badge.svg)](https://github.com/ludgerradke/ImgC/actions/workflows/ci.yml)
+[![CI](https://github.com/intervall-ludger/ImgC/actions/workflows/ci.yml/badge.svg)](https://github.com/intervall-ludger/ImgC/actions/workflows/ci.yml)
 
 # ImgC — Image Optimizer
 
@@ -12,7 +12,7 @@ One Rust core, two front-ends:
   Images are never uploaded; nothing leaves your device.
 - **CLI** — a native `imgc` binary for scripting and batch jobs.
 
-**▶ Live app: https://ludgerradke.github.io/ImgC/**
+**▶ Live app: https://intervall-ludger.github.io/ImgC/**
 
 ## Why
 
@@ -45,7 +45,7 @@ Size targeting (`--max`/`--min`) applies to the raster and PDF outputs.
 
 ## Web app
 
-Open the [live app](https://ludgerradke.github.io/ImgC/) (or run it locally —
+Open the [live app](https://intervall-ludger.github.io/ImgC/) (or run it locally —
 see [below](#building--running-locally)), drop in one or more images, choose the
 output format and options, and download the result. Everything happens locally
 via WebAssembly; there is no backend. Choosing **GIF** with several images
